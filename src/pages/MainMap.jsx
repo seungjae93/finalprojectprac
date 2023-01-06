@@ -5,7 +5,7 @@ import TotalModal from "../components/MapModal/TotalModal";
 import SubModal from "../components/MapModal/SubModal";
 const { kakao } = window;
 
-// 주소 입력후 검색 클릭 시 원하는 주소로 이동
+// 주소 입력후 검색 클릭 시 원하는 주소로 이동시키기
 const MainMap = () => {
   const [state, setState] = useState({
     // 지도의 초기 위치
