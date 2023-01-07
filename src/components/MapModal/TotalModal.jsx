@@ -13,7 +13,7 @@ const TotalModal = (props) => {
   //     window.removeEventListener("click", handleClickOutside);
   //   };
   // }, []);
-
+  //hd
   return (
     <>
       {/* {isOpen && <StModalContainer ref={modalOn}>{Children}</StModalContainer>} */}
