@@ -3,6 +3,7 @@ import styled from "styled-components";
 import axios from "axios";
 import { throttle } from "lodash";
 import { Map, MapMarker } from "react-kakao-maps-sdk";
+import { useNavigate } from "react-router-dom";
 import TotalModal from "../components/MapModal/TotalModal";
 import SubModal from "../components/MapModal/SubModal";
 
@@ -10,6 +11,7 @@ const { kakao } = window;
 
 // 주소 입력후 검색 클릭 시 원하는 주소로 이동
 const MainMap = () => {
+  const navigate = useNavigate();
   const [state, setState] = useState({
     // 지도의 초기 위치
     center: { lat: 33.450705, lng: 126.570677 },
@@ -90,6 +92,13 @@ const MainMap = () => {
             </AutoSearchContainer>
           )}
           <button onClick={onSearchHandler}>검색</button>
+          <button
+            onClick={() => {
+              navigate("/review");
+            }}
+          >
+            리뷰로
+          </button>
         </SearchContainer>
         <StMapContainer>
           <Map // 지도를 표시할 Container
