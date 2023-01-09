@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { useAddPost } from "../redux/modules/reviewApi";
+import { useAddPost } from "../components/review/reviewApi";
 
 import PostCode from "../components/review/PostCode";
 
@@ -407,7 +407,6 @@ const Review = () => {
 
         <button onClick={onSubmitHandler}>후기 제출</button>
       </StContainer>
-      <ReviewList />
     </>
   );
 };
