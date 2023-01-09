@@ -43,7 +43,7 @@ const MainMap = () => {
 
   const geocoder = new kakao.maps.services.Geocoder();
 
-  let callback = function (result, status) {
+  const callback = (result, status) => {
     if (status === kakao.maps.services.Status.OK) {
       const newSearch = result[0];
       setState({
@@ -51,31 +51,16 @@ const MainMap = () => {
       });
     }
   };
-  //검색시 리렌더링 줄이기
-  // const handleSearchAddress = (e) => {
-  //   SetSearchAddress(e.target.value);
-  // };
 
   const onAddressHandler = throttle((e) => {
     const { value } = e.target;
 
-    searchAddress(value);
-    // SetSearchAddress(e.target.value);
-    // console.log(searchAddress);
-    // geocoder.addressSearch(`${searchAddress}`, callback);
+    SetSearchAddress(value);
   }, 500);
-  // const onSearchHandler = useCallback(() => {
-  //   geocoder.addressSearch(`${searchAddress}`, callback);
-  // }, [searchAddress]);
 
   const onSearchHandler = useCallback(() => {
     geocoder.addressSearch(`${searchAddress}`, callback);
   }, [searchAddress]);
-
-  // const onSearchHandler = () => {
-  //   geocoder.addressSearch(`${searchAddress}`, callback);
-
-  // };
 
   return (
     <>
