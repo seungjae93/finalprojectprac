@@ -1,13 +1,14 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import styled from "styled-components";
+import axios from "axios";
+import { throttle } from "lodash";
 import { Map, MapMarker } from "react-kakao-maps-sdk";
 import TotalModal from "../components/MapModal/TotalModal";
 import SubModal from "../components/MapModal/SubModal";
-import { throttle } from "lodash";
-import axios from "axios";
+
 const { kakao } = window;
 
-// 주소 입력후 검색 클릭 시 원하는 주소로 이동시키기
+// 주소 입력후 검색 클릭 시 원하는 주소로 이동
 const MainMap = () => {
   const [state, setState] = useState({
     // 지도의 초기 위치
@@ -16,7 +17,7 @@ const MainMap = () => {
     isPanto: true,
   });
   const [modalOpen, setModalOpen] = useState(false);
-
+  const [searchAddress, SetSearchAddress] = useState(""); //useState()
   const positions = [
     {
       title: "카카오",
@@ -40,11 +41,9 @@ const MainMap = () => {
     setModalOpen(!modalOpen);
   };
 
-  const [searchAddress, SetSearchAddress] = useState("");
-
   const geocoder = new kakao.maps.services.Geocoder();
 
-  const callback = (result, status) => {
+  let callback = function (result, status) {
     if (status === kakao.maps.services.Status.OK) {
       const newSearch = result[0];
       setState({
@@ -66,8 +65,10 @@ const MainMap = () => {
     }
   }, 500);
 
+  //검색시 리렌더링 줄이기
   const onSearchHandler = useCallback(() => {
     geocoder.addressSearch(`${searchAddress}`, callback);
+    SetSearchAddress("");
   }, [searchAddress]);
 
   return (
@@ -75,12 +76,21 @@ const MainMap = () => {
       {modalOpen && <TotalModal modalHandler={modalHandler} />}
       {modalOpen && <SubModal modalHandler={modalHandler} />}
       <StContainer>
-        <input
-          type="text"
-          onChange={onAddressHandler}
-          value={searchAddress}
-        ></input>
-        <button onClick={onSearchHandler}>검색</button>
+        <SearchContainer>
+          <StSearch
+            type="text"
+            onChange={onAddressHandler}
+            value={searchAddress}
+          />
+          {searchAddress && (
+            <AutoSearchContainer>
+              <AutoSearchWrap>
+                <AutoSearchData></AutoSearchData>
+              </AutoSearchWrap>
+            </AutoSearchContainer>
+          )}
+          <button onClick={onSearchHandler}>검색</button>
+        </SearchContainer>
         <StMapContainer>
           <Map // 지도를 표시할 Container
             center={{
@@ -125,6 +135,48 @@ const StContainer = styled.div`
   max-width: 1920px;
   min-width: 680px;
   height: 855px;
+`;
+const SearchContainer = styled.div`
+  position: relative;
+  width: 100%;
+  height: 45px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 0;
+`;
+const StSearch = styled.input`
+  border: 0;
+  padding-left: 10px;
+  background-color: #eaeaea;
+  width: 20%;
+  height: 70%;
+  outline: 1px;
+`;
+const AutoSearchContainer = styled.div`
+  z-index: 3;
+  width: 23%;
+  height: 20vh;
+  background-color: #fff;
+  position: absolute;
+  top: 45px;
+`;
+const AutoSearchWrap = styled.ul`
+  list-style: none;
+`;
+
+const AutoSearchData = styled.li`
+  padding: 10px 8px;
+  margin: auto;
+  width: 90%;
+  font-size: 14px;
+  font-weight: bold;
+  z-index: 4;
+  &:hover {
+    background-color: lightgray;
+    cursor: pointer;
+  }
+  position: relative;
 `;
 const StMapContainer = styled.div`
   width: 100%;
