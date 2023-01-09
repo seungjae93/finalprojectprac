@@ -4,6 +4,7 @@ import { Map, MapMarker } from "react-kakao-maps-sdk";
 import TotalModal from "../components/MapModal/TotalModal";
 import SubModal from "../components/MapModal/SubModal";
 import { throttle } from "lodash";
+import axios from "axios";
 const { kakao } = window;
 
 // 주소 입력후 검색 클릭 시 원하는 주소로 이동시키기
@@ -52,10 +53,17 @@ const MainMap = () => {
     }
   };
 
-  const onAddressHandler = throttle((e) => {
+  const onAddressHandler = throttle(async (e) => {
     const { value } = e.target;
-
     SetSearchAddress(value);
+    try {
+      const response = await axios.post(`/search`, {
+        search: value,
+      });
+      console.log(response.data);
+    } catch (error) {
+      console.log(error);
+    }
   }, 500);
 
   const onSearchHandler = useCallback(() => {
@@ -67,7 +75,11 @@ const MainMap = () => {
       {modalOpen && <TotalModal modalHandler={modalHandler} />}
       {modalOpen && <SubModal modalHandler={modalHandler} />}
       <StContainer>
-        <input type="text" onChange={onAddressHandler}></input>
+        <input
+          type="text"
+          onChange={onAddressHandler}
+          value={searchAddress}
+        ></input>
         <button onClick={onSearchHandler}>검색</button>
         <StMapContainer>
           <Map // 지도를 표시할 Container
